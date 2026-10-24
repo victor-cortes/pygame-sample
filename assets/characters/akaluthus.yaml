@@ -1,0 +1,14 @@
+id: 1000
+name: "Akaluthus"
+sprite_sheet: "0001"
+level: 10
+knowledge: 0
+vitality: 0
+strength: 0
+dextery: 100
+armor: 50
+weap: 50
+weap_type: "bow"
+position:
+  x: 30
+  y: 30

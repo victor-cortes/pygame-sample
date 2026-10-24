@@ -1,0 +1,14 @@
+id: 1001
+name: "Josakin"
+sprite_sheet: "0002"
+level: 10
+knowledge: 0
+vitality: 37
+strength: 42
+dextery: 21
+armor: 50
+weap: 50
+weap_type: "sword_and_shield"
+position:
+  x: 300
+  y: 30
