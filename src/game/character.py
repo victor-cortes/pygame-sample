@@ -34,8 +34,7 @@ class Character:
     strength: int = 0
     dextery: int = 0
     armor: int = 0
-    weap: int = 0
-    weap_type: str = ""
+    weapon: int = 0
     hp: int = 0
 
     move_speed: int = 1.3
@@ -79,7 +78,7 @@ class Character:
         self.max_hp = self.vitality * 10 + self.level * 100
         self.hp = self.max_hp
         self.attack_multiplier = 1 + self.strength * 0.005 + self.dextery * 0.015
-        self.attack = round(self.weap * self.attack_multiplier)
+        self.attack = round(self.weapon * self.attack_multiplier)
         self.defense = self.armor
         self.damage_reduction = self.defense / (self.defense + 100.0)
         self.crit_strike = 0.01 + self.dextery * 0.003

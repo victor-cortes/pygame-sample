@@ -1,6 +1,6 @@
 sprite_sheet:
-  name: "0001"
-  sheet: "0001.png"
+  name: "1000"
+  sheet: "1000.png"
   sets:
     idle:
       y: 1024

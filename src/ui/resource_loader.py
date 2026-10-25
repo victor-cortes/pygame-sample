@@ -4,6 +4,8 @@ import pygame
 import yaml
 
 from src.game.character import Character
+from src.game.skill import Skill
+from src.game.weapon import Weapon
 from src.ui.sprite_tools import SpriteTools
 
 
@@ -45,6 +47,27 @@ class ResourceLoader:
                 sprites[file.name] = sprite
         return sprites
 
+    @classmethod
+    def load_weapons(cls, folder: Path):
+        weapons = {}
+        for file in folder.rglob("*.yaml"):
+            with open(file) as stream:
+                file = yaml.safe_load(stream)
+                weapon = Weapon(**file)
+                weapons[weapon.id] = weapon
+
+        return weapons
+
+    @classmethod
+    def load_skills(cls, folder: Path):
+        skills = {}
+        for file in folder.rglob("*.yaml"):
+            with open(file) as stream:
+                file = yaml.safe_load(stream)
+                skill = Skill(**file['skills'])
+                skills[skill.id] = skill
+
+        return skills
 
     @classmethod
     def load_resources(cls):
@@ -52,4 +75,6 @@ class ResourceLoader:
         fonts = ResourceLoader.load_fonts(Path("assets/fonts"))
         character_defs = ResourceLoader.load_character_defs(Path("assets/sprite_sheets"), sprites)
         characters = ResourceLoader.load_character(Path("assets/characters"))
+        weapons = ResourceLoader.load_weapons(Path("assets/weapons"))
+        skills = ResourceLoader.load_skills(Path("assets/skills"))
         return fonts, character_defs, characters, sprites
