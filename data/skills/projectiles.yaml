@@ -1,0 +1,59 @@
+  1000:
+    id: 1000
+    dirs:
+      up:
+        sprite: "arrow.png"
+        start_x: 0
+        end_x: 0
+        width: 1
+        height: 1
+        speed: 1
+        spawn_x: 0
+        spawn_y: 0
+        collision_box:
+          x: 1
+          y: 1
+          w: 2
+          h: 2
+      left:
+        sprite: "arrow.png"
+        start_x: 0
+        end_x: 0
+        width: 1
+        height: 1
+        speed: 1
+        spawn_x: 0
+        spawn_y: 0
+        collision_box:
+          x: 1
+          y: 1
+          w: 2
+          h: 2
+      down:
+        sprite: "arrow.png"
+        start_x: 0
+        end_x: 0
+        width: 1
+        height: 1
+        speed: 1
+        spawn_x: 0
+        spawn_y: 0
+        collision_box:
+          x: 1
+          y: 1
+          w: 2
+          h: 2
+      right:
+        sprite: "arrow.png"
+        start_x: 0
+        end_x: 0
+        width: 1
+        height: 1
+        speed: 1
+        spawn_x: 0
+        spawn_y: 0
+        collision_box:
+          x: 1
+          y: 1
+          w: 2
+          h: 2

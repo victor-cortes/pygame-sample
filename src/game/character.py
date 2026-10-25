@@ -4,15 +4,10 @@ from enum import Enum
 from pygame import Rect
 from pygame.math import Vector2
 
+from src.game.direction import Direction
+from src.game.weapon import Weapon
+
 DEFAULT_MOVE_PIXELS = 64
-
-
-class Direction(Enum):
-    UP = 'up'
-    LEFT = 'left'
-    DOWN = 'down'
-    RIGHT = 'right'
-
 
 class Motion(Enum):
     IDLE = 'idle'
@@ -34,7 +29,7 @@ class Character:
     strength: int = 0
     dextery: int = 0
     armor: int = 0
-    weapon: int = 0
+    weapon: Weapon | None = None
     hp: int = 0
 
     move_speed: int = 1.3
@@ -42,7 +37,8 @@ class Character:
 
     max_hp: int = 0
     attack_multiplier = 1
-    attack: int = 0
+    min_attack: int = 0
+    max_attack: int = 0
     defense: int = 0
     damage_reduction: float = 0.0
     crit_strike: float = 0.0
@@ -78,16 +74,17 @@ class Character:
         self.max_hp = self.vitality * 10 + self.level * 100
         self.hp = self.max_hp
         self.attack_multiplier = 1 + self.strength * 0.005 + self.dextery * 0.015
-        self.attack = round(self.weapon * self.attack_multiplier)
+        self.min_attack = round(self.weapon.min_attack * self.attack_multiplier if self.weapon is not None else 0)
+        self.max_attack = round(self.weapon.max_attack * self.attack_multiplier if self.weapon is not None else 0)
         self.defense = self.armor
         self.damage_reduction = self.defense / (self.defense + 100.0)
         self.crit_strike = 0.01 + self.dextery * 0.003
 
-    def get_used_poínts(self):
+    def get_used_points(self):
         return self.knowledge + self.strength + self.dextery + self.vitality
 
     def get_available_points(self):
-        return self.level * 10 - self.get_used_poínts()
+        return self.level * 10 - self.get_used_points()
 
     def is_dead(self):
         return self.hp == 0

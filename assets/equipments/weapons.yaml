@@ -1,8 +1,0 @@
-weapons:
-  test_bow:
-    id: 1000
-    type: bow
-    name: Test Bow
-    required_level: 1
-    min_attack: 1
-    max_attack: 1

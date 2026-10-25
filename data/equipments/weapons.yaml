@@ -1,0 +1,10 @@
+1000:
+  id: 1000
+  type: bow
+  name: Test Bow
+  required_level: 1
+  min_attack: 1
+  max_attack: 1
+  sprite: "test_bow.png"
+  skills:
+    - 1000

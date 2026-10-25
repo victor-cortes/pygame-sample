@@ -8,12 +8,13 @@ from pygame.time import Clock
 from src.game.character import Motion
 from src.game.game_context import GameContext
 from src.ui.character_object import CharacterObject
+from src.ui.hud import HUD
 from src.ui.resource_loader import ResourceLoader
 
 clock = Clock()
 FPS = 60
-INTERNAL_WIDTH = 800
-INTERNAL_HEIGHT = 600
+INTERNAL_WIDTH = 600
+INTERNAL_HEIGHT = 480
 SCALE_FACTOR = 2
 
 SCREEN_WIDTH = INTERNAL_WIDTH * SCALE_FACTOR
@@ -41,6 +42,7 @@ def get_move_vector() -> Vector2:
 class GameController:
     context: GameContext = None
     character_objects: dict[int, CharacterObject] = {}
+    hud: HUD = None
 
     def init(self):
         pygame.init()
@@ -50,6 +52,7 @@ class GameController:
         internal_surface = pygame.Surface((INTERNAL_WIDTH, INTERNAL_HEIGHT), pygame.SRCALPHA)
         self.context.surface = pygame.display.get_surface()
         self.context.internal_surface = internal_surface
+        self.hud = HUD(self.context.internal_surface)
         self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites = ResourceLoader.load_resources()
         for character in self.context.characters.values():
             self.character_objects[character.id] = CharacterObject(internal_surface, character,
@@ -81,7 +84,7 @@ class GameController:
 
     def mock_damage(self, player: CharacterObject):
         variance = 1 + ((random.random() * 10) - 5) / 100
-        damage = player.character.attack * variance
+        damage = player.character.max_attack * variance
         if random.random() < player.character.crit_strike:
             damage *= 3
         self.character_objects[1001].character.take_damage(round(damage))
@@ -89,8 +92,10 @@ class GameController:
     def render(self):
         self.context.delta_time = clock.tick(FPS) / 1000
         self.context.internal_surface.fill((150, 150, 150))
+        self.hud.draw(self.context)
         for c in sorted(self.character_objects.values(), key=lambda c: c.character.position.y):
             c.draw(self.context)
+
         scaled_surface = pygame.transform.scale(self.context.internal_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
         self.context.surface.fill((0, 0, 0))
         self.context.surface.blit(scaled_surface, (0, 0))

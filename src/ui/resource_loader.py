@@ -4,6 +4,7 @@ import pygame
 import yaml
 
 from src.game.character import Character
+from src.game.projectile import Projectile
 from src.game.skill import Skill
 from src.game.weapon import Weapon
 from src.ui.sprite_tools import SpriteTools
@@ -20,15 +21,17 @@ class ResourceLoader:
         return resources
 
     @classmethod
-    def load_character(cls, folder: Path):
+    def load_character(cls, folder: Path, weapons: dict[int, Weapon]):
         chars = {}
         for file in folder.rglob("*.yaml"):
             with open(file) as stream:
                 file = yaml.safe_load(stream)
-                character = Character()
-                character_from_file = Character(**file)
-                for key, value in character_from_file.__dict__.items():
-                    character.__setattr__(key, value)
+                new_character = Character().__dict__ | file
+                character = Character(**new_character)
+                try:
+                    character.weapon = weapons[new_character['weapon']]
+                except KeyError:
+                    character.weapon = None
                 character.calculate_status()
                 chars[character.id] = character
 
@@ -48,33 +51,51 @@ class ResourceLoader:
         return sprites
 
     @classmethod
-    def load_weapons(cls, folder: Path):
+    def load_weapons(cls, folder: Path, skills: dict[int, Skill]):
         weapons = {}
-        for file in folder.rglob("*.yaml"):
+        for file in folder.rglob("weapons*.yaml"):
             with open(file) as stream:
                 file = yaml.safe_load(stream)
-                weapon = Weapon(**file)
-                weapons[weapon.id] = weapon
+                for key, value in file.items():
+                    weapon = Weapon(**value)
+                    weapon.skills = [skills[skill] for skill in value['skills']]
+                    weapons[key] = weapon
 
         return weapons
 
     @classmethod
-    def load_skills(cls, folder: Path):
+    def load_skills(cls, folder: Path, projectiles: dict[int, Projectile]):
         skills = {}
-        for file in folder.rglob("*.yaml"):
+        for file in folder.rglob("skills*.yaml"):
             with open(file) as stream:
                 file = yaml.safe_load(stream)
-                skill = Skill(**file['skills'])
-                skills[skill.id] = skill
+                for key, value in file.items():
+                    skill = Skill(**value)
+                    skill.projectile = projectiles[int(key)]
+                    skills[key] = skill
+
 
         return skills
+
+    @classmethod
+    def load_projectiles(cls, folder: Path):
+        projectiles = {}
+        for file in folder.rglob("projectiles*.yaml"):
+            with open(file) as stream:
+                file = yaml.safe_load(stream)
+                for key, value in file.items():
+                    projectiles[key] = Projectile(**value)
+
+        return projectiles
 
     @classmethod
     def load_resources(cls):
         sprites = ResourceLoader.load_sprites(Path("assets/sprites"))
         fonts = ResourceLoader.load_fonts(Path("assets/fonts"))
-        character_defs = ResourceLoader.load_character_defs(Path("assets/sprite_sheets"), sprites)
-        characters = ResourceLoader.load_character(Path("assets/characters"))
-        weapons = ResourceLoader.load_weapons(Path("assets/weapons"))
-        skills = ResourceLoader.load_skills(Path("assets/skills"))
+        character_defs = ResourceLoader.load_character_defs(Path("data/character_defs"), sprites)
+        projectiles = ResourceLoader.load_projectiles(Path("data/skills"))
+        skills = ResourceLoader.load_skills(Path("data/skills"), projectiles)
+        weapons = ResourceLoader.load_weapons(Path("data/equipments"), skills)
+        characters = ResourceLoader.load_character(Path("data/characters"), weapons)
+
         return fonts, character_defs, characters, sprites

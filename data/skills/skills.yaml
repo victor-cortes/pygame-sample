@@ -1,0 +1,9 @@
+1000:
+  id: 1000
+  name: Basic Attack
+  weapon_type: bow
+  attack_type: projectile
+  damage_multiplier: 1
+  fixed_damage: 0
+  projectile: 1000
+  slash: 0
