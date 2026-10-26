@@ -3,6 +3,8 @@ from pygame import Surface, Rect, Vector2
 
 from src.game.character import Character, Motion
 from src.game.game_context import GameContext
+from src.game.skill import Skill
+from src.game.skill_controller import SkillController
 from src.ui.health_bar import HealthBar
 from src.ui.object import Object
 from src.ui.sprite_tools import SpriteDef, SpriteSet
@@ -25,8 +27,9 @@ class CharacterObject(Object):
     def stop(self):
         self.character.stop()
 
-    def attack(self):
-        self.character.make_attack()
+    def use_skill(self, skill: Skill):
+        self.character.use_skill(skill)
+        SkillController.use_skill(self.character, skill)
 
     def draw(self, ctx: GameContext) -> None:
         self.health_bar.draw(ctx)

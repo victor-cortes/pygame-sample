@@ -39,7 +39,11 @@ class ResourceLoader:
 
     @classmethod
     def load_fonts(cls, folder: Path):
-        return {'font_level': pygame.font.Font(f"{folder}/numerals.ttf", 12)}
+        return {
+            'font_level': pygame.font.Font(f"{folder}/numerals.ttf", 12),
+            'hud': pygame.font.Font(f"{folder}/Pixolletta8px.ttf", 10)
+        }
+
 
     @classmethod
     def load_sprites(cls, folder: Path):
@@ -98,4 +102,4 @@ class ResourceLoader:
         weapons = ResourceLoader.load_weapons(Path("data/equipments"), skills)
         characters = ResourceLoader.load_character(Path("data/characters"), weapons)
 
-        return fonts, character_defs, characters, sprites
+        return fonts, character_defs, characters, sprites, skills

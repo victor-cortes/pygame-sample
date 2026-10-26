@@ -5,5 +5,7 @@
   attack_type: projectile
   damage_multiplier: 1
   fixed_damage: 0
+  cooldown: 0
   projectile: 1000
+  projectile_max_distance: 30
   slash: 0

@@ -2,14 +2,16 @@ import pygame
 from pygame.font import Font
 
 from src.game.character import Character
+from src.game.skill import Skill
 
 
 class GameContext:
-    player_index: int = 1000
+    player: Character = None
     character_defs: dict = {}
     characters: dict[int, Character] = {}
+    skills: dict[int, Skill] = {}
     sprites: dict[str, pygame.Surface] = {}
-    fonts: dict[int, Font] = {}
+    fonts: dict[str, Font] = {}
     running: bool = False
     delta_time: float = 0.0
     surface: pygame.Surface = None

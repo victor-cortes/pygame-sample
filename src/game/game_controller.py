@@ -1,5 +1,6 @@
 import random
 import pygame
+from pygame.constants import K_1
 
 from pygame.event import Event
 from pygame.math import Vector2
@@ -20,6 +21,12 @@ SCALE_FACTOR = 2
 SCREEN_WIDTH = INTERNAL_WIDTH * SCALE_FACTOR
 SCREEN_HEIGHT = INTERNAL_HEIGHT * SCALE_FACTOR
 
+PLAYER = 1000
+
+SKILL_KEYMAPS = {
+    K_1: 1000
+}
+
 
 def get_move_vector() -> Vector2:
     pressed_keys = pygame.key.get_pressed()
@@ -39,6 +46,13 @@ def get_move_vector() -> Vector2:
     return vec.normalize()
 
 
+def get_used_skill() -> int | None:
+    for key in SKILL_KEYMAPS:
+        if pygame.key.get_pressed()[key]:
+            return SKILL_KEYMAPS[key]
+
+    return None
+
 class GameController:
     context: GameContext = None
     character_objects: dict[int, CharacterObject] = {}
@@ -53,7 +67,7 @@ class GameController:
         self.context.surface = pygame.display.get_surface()
         self.context.internal_surface = internal_surface
         self.hud = HUD(self.context.internal_surface)
-        self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites = ResourceLoader.load_resources()
+        self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceLoader.load_resources()
         for character in self.context.characters.values():
             self.character_objects[character.id] = CharacterObject(internal_surface, character,
                                                                    self.context.character_defs[character.sprite_sheet])
@@ -62,25 +76,21 @@ class GameController:
         pygame.quit()
 
     def handle_events(self):
-        player = self.character_objects[self.context.player_index]
+        self.context.player = self.context.characters[PLAYER]
+        player_obj = self.character_objects[PLAYER]
         move_input = get_move_vector()
-        if move_input.x == 0 and move_input.y == 0:
-            player.stop()
-        else:
-            player.move(get_move_vector())
+        used_skill: int | None = get_used_skill()
 
+        if used_skill is not None:
+            player_obj.use_skill(self.context.skills[used_skill])
+
+        if move_input.x == 0 and move_input.y == 0:
+            player_obj.stop()
+        else:
+            player_obj.move(get_move_vector())
         event: Event = pygame.event.poll()
         if event.type == pygame.QUIT:
             self.context.running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player.attack()
-                self.mock_damage(player)
-            if event.key == pygame.K_ESCAPE:
-                self.character_objects[1001].character.hp = self.character_objects[1001].character.max_hp
-                self.character_objects[1001].character.motion = Motion.IDLE
-                player.character.hp = player.character.max_hp
-                player.character.motion = Motion.IDLE
 
     def mock_damage(self, player: CharacterObject):
         variance = 1 + ((random.random() * 10) - 5) / 100
@@ -93,7 +103,7 @@ class GameController:
         self.context.delta_time = clock.tick(FPS) / 1000
         self.context.internal_surface.fill((150, 150, 150))
         self.hud.draw(self.context)
-        for c in sorted(self.character_objects.values(), key=lambda c: c.character.position.y):
+        for c in sorted(self.character_objects.values(), key=lambda p: p.character.position.y):
             c.draw(self.context)
 
         scaled_surface = pygame.transform.scale(self.context.internal_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))

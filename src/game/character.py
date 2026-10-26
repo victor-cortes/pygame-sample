@@ -128,11 +128,6 @@ class Character:
         return self.motion
 
     def make_attack(self) -> Motion:
-        if self.motion == Motion.DYING or self.is_dead() or self.motion == Motion.ATTACKING_BOW:
-            return self.motion
-
-        self.motion = Motion.ATTACKING_BOW
-        self.attack_timer = 0
         return self.motion
 
     def tick(self, dt: float):
@@ -146,3 +141,7 @@ class Character:
                     if self.attack_timer > 1 / self.attack_speed:
                         self.motion = Motion.IDLE
                         self.attack_timer = 0
+
+    def use_skill(self, skill):
+        if self.weapon and skill in self.weapon.skills:
+            pass

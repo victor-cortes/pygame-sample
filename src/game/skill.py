@@ -11,5 +11,7 @@ class Skill:
     attack_type: int
     damage_multiplier: float
     fixed_damage: float
+    cooldown: float = 0
     projectile: Projectile | None = None
+    projectile_max_distance: float = 0
     slash: None = None
