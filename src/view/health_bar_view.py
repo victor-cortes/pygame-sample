@@ -1,15 +1,15 @@
 import pygame
 from pygame import Rect
 
-from src.game.character import Character
-from src.game.game_context import GameContext
-from src.ui.object import Object
+from src.domain.models.game_context import GameContext
+from src.domain.models.character import Character
+from src.view.view import View
 
 HP_BAR_WIDTH = 50
 HP_BAR_HEIGHT = 7
 
 
-class HealthBar(Object):
+class HealthBarView(View):
     cached_hp: float
     stored_hp = None
     timer = 0

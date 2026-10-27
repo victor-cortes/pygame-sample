@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 
 import pygame
 
-from src.game.game_context import GameContext
+from src.domain.models.game_context import GameContext
 
 
-class Object(ABC):
+class View(ABC):
     def __init__(self, surface: pygame.Surface):
         self.surface = surface
         self.pos = (0, 0)

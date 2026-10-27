@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pygame
 
-from src.game.character import Direction
+from src.domain.models.character import Direction
 
 
 @dataclass

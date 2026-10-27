@@ -1,24 +1,23 @@
-import pygame.draw
 from pygame import Surface, Rect, Vector2
 
-from src.game.character import Character, Motion
-from src.game.game_context import GameContext
-from src.game.skill import Skill
-from src.game.skill_controller import SkillController
-from src.ui.health_bar import HealthBar
-from src.ui.object import Object
-from src.ui.sprite_tools import SpriteDef, SpriteSet
+from src.domain.models.game_context import GameContext
+from src.controller.skill_controller import SkillController
+from src.domain.core.sprite_tools import SpriteDef, SpriteSet
+from src.domain.models.character import Character, Motion
+from src.domain.models.skill import Skill
+from src.view.health_bar_view import HealthBarView
+from src.view.view import View
 
 
-class CharacterObject(Object):
-    health_bar: HealthBar
+class CharacterView(View):
+    health_bar: HealthBarView
     animation_var: float = 0
     cached_motion: Motion = Motion.IDLE
 
     def __init__(self, surface: Surface, character: Character, sprite_def: SpriteDef):
         super().__init__(surface)
         self.character = character
-        self.health_bar = HealthBar(surface, character)
+        self.health_bar = HealthBarView(surface, character)
         self.sprite_def = sprite_def
 
     def move(self, vector: Vector2):

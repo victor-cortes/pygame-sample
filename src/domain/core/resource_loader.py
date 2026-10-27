@@ -3,11 +3,11 @@ from pathlib import Path
 import pygame
 import yaml
 
-from src.game.character import Character
-from src.game.projectile import Projectile
-from src.game.skill import Skill
-from src.game.weapon import Weapon
-from src.ui.sprite_tools import SpriteTools
+from src.domain.models.character import Character
+from src.domain.models.projectile import Projectile
+from src.domain.models.skill import Skill
+from src.domain.models.weapon import Weapon
+from src.domain.core.sprite_tools import SpriteTools
 
 
 class ResourceLoader:

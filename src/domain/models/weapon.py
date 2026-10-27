@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from src.game.skill import Skill
+from src.domain.models.skill import Skill
 
 
 @dataclass

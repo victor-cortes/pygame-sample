@@ -1,5 +1,5 @@
-from src.game.character import Character
-from src.game.skill import Skill
+from src.domain.models.character import Character
+from src.domain.models.skill import Skill
 
 
 class SkillController:

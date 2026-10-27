@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.game.projectile import Projectile
+from src.domain.models.projectile import Projectile
 
 
 @dataclass

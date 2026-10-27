@@ -1,21 +1,13 @@
 from dataclasses import dataclass, field
-from enum import Enum
 
 from pygame import Rect
 from pygame.math import Vector2
 
-from src.game.direction import Direction
-from src.game.weapon import Weapon
+from src.domain.models.direction import Direction
+from src.domain.models.motion import Motion
+from src.domain.models.weapon import Weapon
 
 DEFAULT_MOVE_PIXELS = 64
-
-class Motion(Enum):
-    IDLE = 'idle'
-    MOVING = 'moving'
-    ATTACKING_BOW = 'attacking_bow'
-    DYING = 'dying'
-    DEAD = 'dead'
-
 
 @dataclass
 class Character:
