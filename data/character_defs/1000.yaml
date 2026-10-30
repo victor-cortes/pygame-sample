@@ -24,7 +24,7 @@ sprite_sheet:
       speed: 10
       repeat: true
       dirs: [ up, left, down, right ]
-    attacking_bow:
+    bow_attack_1:
       y: 1024
       x_offset: 0
       y_offset: 0

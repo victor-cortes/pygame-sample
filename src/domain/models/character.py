@@ -134,6 +134,9 @@ class Character:
                         self.motion = Motion.IDLE
                         self.attack_timer = 0
 
+    def is_using_skill(self):
+        return self.weapon and any(skill.is_active for skill in self.weapon.skills)
+
     def use_skill(self, skill):
-        if self.weapon and skill in self.weapon.skills:
-            pass
+        if self.weapon and skill in self.weapon.skills and not self.is_using_skill() and not self.is_dead():
+            skill.start_skill(self)

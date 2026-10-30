@@ -2,10 +2,18 @@
   id: 1000
   name: Basic Attack
   weapon_type: bow
-  attack_type: projectile
+  skill_type: attack
   damage_multiplier: 1
   fixed_damage: 0
+  cast_time: 1
   cooldown: 0
-  projectile: 1000
-  projectile_max_distance: 30
-  slash: 0
+  script:
+    set_motion: bow_attack_1
+    delay: 1000
+    spawn_projectile:
+      projectile: 1000
+      projectile_max_distance: 30
+      when_collides:
+        damage_multiplier: 1
+        fixed_damage: 0
+
