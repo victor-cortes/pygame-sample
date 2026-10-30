@@ -37,7 +37,7 @@ class SpriteDef:
     sprite_sheet: SpriteSheet
     sprite: pygame.Surface
 
-class SpriteTools:
+class SpriteService:
     @staticmethod
     def load(path: Path, sprites: dict[str, pygame.Surface]) -> SpriteDef:
         with open(path) as stream:

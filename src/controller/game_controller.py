@@ -7,7 +7,7 @@ from pygame.math import Vector2
 from pygame.time import Clock
 
 from src.domain.models.game_context import GameContext
-from src.domain.core.resource_loader import ResourceLoader
+from src.domain.service.resource_service import ResourceService
 from src.view.character_view import CharacterView
 from src.view.hud_view import HUDView
 
@@ -67,7 +67,7 @@ class GameController:
         self.context.outter_surface = pygame.display.get_surface()
         self.context.surface = internal_surface
         self.hud = HUDView()
-        self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceLoader.load_resources()
+        self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceService.load_resources()
         for character in self.context.characters.values():
             self.character_objects[character.id] = CharacterView(character,
                                                                  self.context.character_defs[character.sprite_sheet])

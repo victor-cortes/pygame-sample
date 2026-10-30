@@ -7,15 +7,15 @@ from src.domain.models.character import Character
 from src.domain.models.projectile import Projectile
 from src.domain.models.skill import Skill
 from src.domain.models.weapon import Weapon
-from src.domain.core.sprite_tools import SpriteTools
+from src.domain.service.sprite_service import SpriteService
 
 
-class ResourceLoader:
+class ResourceService:
     @classmethod
     def load_character_defs(cls, folder: Path, sprites: dict[str, pygame.Surface]):
         resources = {}
         for file in folder.rglob("*.yaml"):
-            sprite = SpriteTools.load(file, sprites)
+            sprite = SpriteService.load(file, sprites)
             resources[f"{sprite.sprite_sheet.name}"] = sprite
 
         return resources
@@ -94,12 +94,12 @@ class ResourceLoader:
 
     @classmethod
     def load_resources(cls):
-        sprites = ResourceLoader.load_sprites(Path("assets/sprites"))
-        fonts = ResourceLoader.load_fonts(Path("assets/fonts"))
-        character_defs = ResourceLoader.load_character_defs(Path("data/character_defs"), sprites)
-        projectiles = ResourceLoader.load_projectiles(Path("data/skills"))
-        skills = ResourceLoader.load_skills(Path("data/skills"), projectiles)
-        weapons = ResourceLoader.load_weapons(Path("data/equipments"), skills)
-        characters = ResourceLoader.load_character(Path("data/characters"), weapons)
+        sprites = ResourceService.load_sprites(Path("assets/sprites"))
+        fonts = ResourceService.load_fonts(Path("assets/fonts"))
+        character_defs = ResourceService.load_character_defs(Path("data/character_defs"), sprites)
+        projectiles = ResourceService.load_projectiles(Path("data/skills"))
+        skills = ResourceService.load_skills(Path("data/skills"), projectiles)
+        weapons = ResourceService.load_weapons(Path("data/equipments"), skills)
+        characters = ResourceService.load_character(Path("data/characters"), weapons)
 
         return fonts, character_defs, characters, sprites, skills
