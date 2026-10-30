@@ -1,5 +1,3 @@
-import random
-
 import pygame
 from pygame.constants import K_1
 from pygame.event import Event
@@ -9,7 +7,7 @@ from pygame.time import Clock
 from src.domain.models.game_context import GameContext
 from src.domain.service.resource_service import ResourceService
 from src.view.character_view import CharacterView
-from src.view.hud_view import HUDView
+from src.view.game_view import GameView
 
 clock = Clock()
 FPS = 60
@@ -55,29 +53,32 @@ def get_used_skill() -> int | None:
 
 class GameController:
     context: GameContext = None
-    character_objects: dict[int, CharacterView] = {}
-    hud: HUDView = None
+    game_view = GameView()
 
     def init(self):
         pygame.init()
-        self.context = GameContext()
         pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), depth=32)
         pygame.display.set_caption("Game")
         internal_surface = pygame.Surface((INTERNAL_WIDTH, INTERNAL_HEIGHT), pygame.SRCALPHA)
-        self.context.outter_surface = pygame.display.get_surface()
+
+        self.context = GameContext()
+        self.context.outer_surface = pygame.display.get_surface()
         self.context.surface = internal_surface
-        self.hud = HUDView()
         self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceService.load_resources()
+        self.load_characters()
+
+    def load_characters(self):
         for character in self.context.characters.values():
-            self.character_objects[character.id] = CharacterView(character,
-                                                                 self.context.character_defs[character.sprite_sheet])
+            self.game_view.character_views[character.id] = CharacterView(character,
+                                                                         self.context.character_defs[
+                                                                             character.sprite_sheet])
 
     def teardown(self):
         pygame.quit()
 
     def handle_events(self):
         self.context.player = self.context.characters[PLAYER]
-        player_obj = self.character_objects[PLAYER]
+        player_obj = self.game_view.character_views[PLAYER]
         move_input = get_move_vector()
         used_skill: int | None = get_used_skill()
 
@@ -92,23 +93,15 @@ class GameController:
         if event.type == pygame.QUIT:
             self.context.running = False
 
-    def mock_damage(self, player: CharacterView):
-        variance = 1 + ((random.random() * 10) - 5) / 100
-        damage = player.character.max_attack * variance
-        if random.random() < player.character.crit_strike:
-            damage *= 3
-        self.character_objects[1001].character.take_damage(round(damage))
-
     def render(self):
         self.context.delta_time = clock.tick(FPS) / 1000
         self.context.surface.fill((150, 150, 150))
-        self.hud.draw(self.context)
-        for c in sorted(self.character_objects.values(), key=lambda p: p.character.position.y):
-            c.draw(self.context)
+
+        self.game_view.draw(self.context)
 
         scaled_surface = pygame.transform.scale(self.context.surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.context.outter_surface.fill((0, 0, 0))
-        self.context.outter_surface.blit(scaled_surface, (0, 0))
+        self.context.outer_surface.fill((0, 0, 0))
+        self.context.outer_surface.blit(scaled_surface, (0, 0))
         pygame.display.flip()
 
     def start(self):
