@@ -4,9 +4,10 @@ from pygame.event import Event
 from pygame.math import Vector2
 from pygame.time import Clock
 
+from models import character
+from src.controller.character_controller import CharacterController
 from src.domain.models.game_context import GameContext
 from src.domain.service.resource_service import ResourceService
-from src.view.character_view import CharacterView
 from src.view.game_view import GameView
 
 clock = Clock()
@@ -52,8 +53,9 @@ def get_used_skill() -> int | None:
 
 
 class GameController:
-    context: GameContext = None
     game_view = GameView()
+    context: GameContext
+    character_controllers: dict[int, CharacterController]
 
     def init(self):
         pygame.init()
@@ -64,31 +66,39 @@ class GameController:
         self.context = GameContext()
         self.context.outer_surface = pygame.display.get_surface()
         self.context.surface = internal_surface
-        self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceService.load_resources()
+        self.load_resources()
         self.load_characters()
 
+    def load_resources(self):
+        (self.context.fonts,
+         self.context.character_defs,
+         self.context.characters,
+         self.context.sprites,
+         self.context.skills) = ResourceService.load_resources()
+
     def load_characters(self):
-        for character in self.context.characters.values():
-            self.game_view.character_views[character.id] = CharacterView(character,
-                                                                         self.context.character_defs[
-                                                                             character.sprite_sheet])
+        self.character_controllers = {
+            key: CharacterController(character, self.context.character_defs[character.sprite_sheet])
+            for key, character in self.context.characters.items()
+        }
+        self.game_view.character_views = [c.character_view for c in self.character_controllers.values()]
 
     def teardown(self):
         pygame.quit()
 
     def handle_events(self):
+        player = self.character_controllers[PLAYER]
         self.context.player = self.context.characters[PLAYER]
-        player_obj = self.game_view.character_views[PLAYER]
         move_input = get_move_vector()
         used_skill: int | None = get_used_skill()
 
         if used_skill is not None:
-            player_obj.use_skill(self.context.skills[used_skill])
+            player.use_skill(self.context.skills[used_skill])
 
         if move_input.x == 0 and move_input.y == 0:
-            player_obj.stop()
+            player.stop()
         else:
-            player_obj.move(get_move_vector())
+            player.move(get_move_vector())
         event: Event = pygame.event.poll()
         if event.type == pygame.QUIT:
             self.context.running = False

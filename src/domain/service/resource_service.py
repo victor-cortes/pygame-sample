@@ -21,7 +21,7 @@ class ResourceService:
         return resources
 
     @classmethod
-    def load_character(cls, folder: Path, weapons: dict[int, Weapon]):
+    def load_character(cls, folder: Path, weapons: dict[int, Weapon]) -> dict[int, Character]:
         chars = {}
         for file in folder.rglob("*.yaml"):
             with open(file) as stream:

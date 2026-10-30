@@ -6,7 +6,7 @@ from src.view.view import View
 
 class GameView(View):
     hud: HUDView = None
-    character_views: dict[int, CharacterView] = {}
+    character_views: list[CharacterView] = []
 
     def __init__(self):
         super().__init__()
@@ -14,5 +14,5 @@ class GameView(View):
 
     def draw(self, ctx: GameContext) -> None:
         self.hud.draw(ctx)
-        for c in sorted(self.character_views.values(), key=lambda p: p.character.position.y):
+        for c in sorted(self.character_views, key=lambda p: p.character.position.y):
             c.draw(ctx)
