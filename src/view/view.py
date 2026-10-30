@@ -6,8 +6,7 @@ from src.domain.models.game_context import GameContext
 
 
 class View(ABC):
-    def __init__(self, surface: pygame.Surface):
-        self.surface = surface
+    def __init__(self):
         self.pos = (0, 0)
 
     @abstractmethod

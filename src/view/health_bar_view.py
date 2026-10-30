@@ -15,19 +15,19 @@ class HealthBarView(View):
     timer = 0
     damages = []
 
-    def __init__(self, surface: pygame.Surface, character: Character):
-        super().__init__(surface)
+    def __init__(self, character: Character):
+        super().__init__()
         self.character = character
         self.cached_hp = character.hp
 
     def draw(self, ctx: GameContext) -> None:
         bar_rect: Rect = pygame.Rect((32 - HP_BAR_WIDTH / 2, -8) + self.character.position,
                                      (HP_BAR_WIDTH, HP_BAR_HEIGHT))
-        pygame.draw.rect(self.surface, (175, 160, 160), bar_rect)
-        pygame.draw.rect(self.surface, (200, 50, 50),
+        pygame.draw.rect(ctx.surface, (175, 160, 160), bar_rect)
+        pygame.draw.rect(ctx.surface, (200, 50, 50),
                          (bar_rect.topleft, (HP_BAR_WIDTH * self.cached_hp / self.character.max_hp, HP_BAR_HEIGHT)))
-        pygame.draw.rect(self.surface, (50, 50, 200), (bar_rect.topleft, (HP_BAR_WIDTH * self.character.hp / self.character.max_hp, HP_BAR_HEIGHT)))
-        pygame.draw.rect(self.surface, (100, 100, 200),
+        pygame.draw.rect(ctx.surface, (50, 50, 200), (bar_rect.topleft, (HP_BAR_WIDTH * self.character.hp / self.character.max_hp, HP_BAR_HEIGHT)))
+        pygame.draw.rect(ctx.surface, (100, 100, 200),
                          ((bar_rect.x, bar_rect.y + 1), (HP_BAR_WIDTH * self.character.hp / self.character.max_hp, 2)))
 
         if self.character.hp < self.cached_hp:
@@ -47,7 +47,7 @@ class HealthBarView(View):
             self.stored_hp = None
             self.timer = 0
 
-        pygame.draw.rect(self.surface, (250, 250, 250), bar_rect, 1)
+        pygame.draw.rect(ctx.surface, (250, 250, 250), bar_rect, 1)
 
         # print(bar_rect)
         # level_surface: pygame.Surface = ctx.fonts['font_level'].render(f"{self.character.level}", True, (255, 255, 255))

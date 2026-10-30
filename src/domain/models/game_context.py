@@ -14,5 +14,5 @@ class GameContext:
     fonts: dict[str, Font] = {}
     running: bool = False
     delta_time: float = 0.0
+    outter_surface: pygame.Surface = None
     surface: pygame.Surface = None
-    internal_surface: pygame.Surface = None

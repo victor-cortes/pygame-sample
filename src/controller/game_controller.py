@@ -64,12 +64,12 @@ class GameController:
         pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), depth=32)
         pygame.display.set_caption("Game")
         internal_surface = pygame.Surface((INTERNAL_WIDTH, INTERNAL_HEIGHT), pygame.SRCALPHA)
-        self.context.surface = pygame.display.get_surface()
-        self.context.internal_surface = internal_surface
-        self.hud = HUDView(self.context.internal_surface)
+        self.context.outter_surface = pygame.display.get_surface()
+        self.context.surface = internal_surface
+        self.hud = HUDView()
         self.context.fonts, self.context.character_defs, self.context.characters, self.context.sprites, self.context.skills = ResourceLoader.load_resources()
         for character in self.context.characters.values():
-            self.character_objects[character.id] = CharacterView(internal_surface, character,
+            self.character_objects[character.id] = CharacterView(character,
                                                                  self.context.character_defs[character.sprite_sheet])
 
     def teardown(self):
@@ -101,14 +101,14 @@ class GameController:
 
     def render(self):
         self.context.delta_time = clock.tick(FPS) / 1000
-        self.context.internal_surface.fill((150, 150, 150))
+        self.context.surface.fill((150, 150, 150))
         self.hud.draw(self.context)
         for c in sorted(self.character_objects.values(), key=lambda p: p.character.position.y):
             c.draw(self.context)
 
-        scaled_surface = pygame.transform.scale(self.context.internal_surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
-        self.context.surface.fill((0, 0, 0))
-        self.context.surface.blit(scaled_surface, (0, 0))
+        scaled_surface = pygame.transform.scale(self.context.surface, (SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.context.outter_surface.fill((0, 0, 0))
+        self.context.outter_surface.blit(scaled_surface, (0, 0))
         pygame.display.flip()
 
     def start(self):

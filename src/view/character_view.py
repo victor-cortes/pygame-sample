@@ -14,10 +14,10 @@ class CharacterView(View):
     animation_var: float = 0
     cached_motion: Motion = Motion.IDLE
 
-    def __init__(self, surface: Surface, character: Character, sprite_def: SpriteDef):
-        super().__init__(surface)
+    def __init__(self, character: Character, sprite_def: SpriteDef):
+        super().__init__()
         self.character = character
-        self.health_bar = HealthBarView(surface, character)
+        self.health_bar = HealthBarView(character)
         self.sprite_def = sprite_def
 
     def move(self, vector: Vector2):
@@ -50,7 +50,7 @@ class CharacterView(View):
         else:
             index = min(round(self.animation_var) if end != 0 else 0, motion.end_x)
 
-        self.surface.blit(self.sprite_def.sprite,
+        ctx.surface.blit(self.sprite_def.sprite,
                           (self.character.position.x - motion.x_offset, self.character.position.y - motion.y_offset),
                           Rect((motion.start_x + index) * motion.width, motion.y + dir_index * motion.height,
                                motion.width, motion.height))
