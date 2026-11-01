@@ -3,11 +3,14 @@ from dataclasses import dataclass, field
 from pygame import Rect
 from pygame.math import Vector2
 
+from models.character_state import CharacterState
+from models.skill import Skill
+from service.event_dispatcher import EventDispatcher
 from src.domain.models.direction import Direction
-from src.domain.models.motion import Motion
 from src.domain.models.weapon import Weapon
 
 DEFAULT_MOVE_PIXELS = 64
+
 
 @dataclass
 class Character:
@@ -36,13 +39,17 @@ class Character:
     crit_strike: float = 0.0
 
     direction: Direction = Direction.DOWN
-    motion: Motion = Motion.IDLE
+    state: CharacterState = CharacterState.IDLE
 
     position: Vector2 = field(default_factory=Vector2)
     move_vec: Vector2 = field(default_factory=Vector2)
 
     collision_box: Rect = field(default_factory=lambda x=16, y=12, w=30, h=40: Rect(x, y, w, h))
     attack_timer: float = 0
+
+    on: dict[str, EventDispatcher] = field(default_factory= lambda: {
+        'die': EventDispatcher()
+    })
 
     def __post_init__(self):
         if isinstance(self.position, dict):
@@ -57,10 +64,6 @@ class Character:
 
         elif isinstance(self.collision_box, (list, tuple)):
             self.collision_box = Rect(*self.collision_box)
-
-    def set_move(self, direction: Direction):
-        self.direction = direction
-        self.motion = Motion.MOVING
 
     def calculate_status(self):
         self.max_hp = self.vitality * 10 + self.level * 100
@@ -78,9 +81,6 @@ class Character:
     def get_available_points(self):
         return self.level * 10 - self.get_used_points()
 
-    def is_dead(self):
-        return self.hp == 0
-
     def heal(self, ammount: int):
         if not self.is_dead():
             self.hp = min(self.max_hp, self.hp + ammount)
@@ -91,13 +91,16 @@ class Character:
             self.hp = max(0, self.hp - dmg)
 
             if self.hp <= 0:
-                self.motion = Motion.DYING
+                self.state = CharacterState.DEAD
+                self.on['die'].trigger_event()
             return dmg
         return 0
 
-    def move(self, vector: Vector2) -> Motion:
-        if self.motion == Motion.DYING or self.motion == Motion.ATTACKING_BOW or self.is_dead():
-            return self.motion
+    def move(self, vector: Vector2):
+        if self.state == CharacterState.DEAD or self.state == CharacterState.USING_SKILL:
+            return False
+
+        self.state = CharacterState.MOVING
 
         if abs(vector.x) > abs(vector.y):
             if vector.x > 0:
@@ -109,34 +112,30 @@ class Character:
                 self.direction = Direction.DOWN
             else:
                 self.direction = Direction.UP
+
         self.move_vec = vector
-        self.motion = Motion.MOVING
-        return self.motion
+        return True
 
-    def stop(self) -> Motion:
-        if self.motion == Motion.MOVING:
-            self.motion = Motion.IDLE
+    def stop(self):
+        if self.state == CharacterState.MOVING:
+            self.state = CharacterState.IDLE
             self.move_vec = Vector2(0, 0)
-        return self.motion
-
-    def make_attack(self) -> Motion:
-        return self.motion
+            return True
+        return False
 
     def tick(self, dt: float):
-        match self.motion:
-            case Motion.MOVING:
+        # mover para um physics_service
+        match self.state:
+            case CharacterState.MOVING:
                 if not self.is_dead():
                     self.position += self.move_vec * self.move_speed * dt * DEFAULT_MOVE_PIXELS
-            case Motion.ATTACKING_BOW:
-                if not self.is_dead():
-                    self.attack_timer += dt
-                    if self.attack_timer > 1 / self.attack_speed:
-                        self.motion = Motion.IDLE
-                        self.attack_timer = 0
 
     def is_using_skill(self):
         return self.weapon and any(skill.is_active for skill in self.weapon.skills)
 
-    def use_skill(self, skill):
+    def is_dead(self):
+        return self.hp <= 0 or self.state == CharacterState.DEAD
+
+    def use_skill(self, skill: Skill):
         if self.weapon and skill in self.weapon.skills and not self.is_using_skill() and not self.is_dead():
             skill.start_skill(self)

@@ -4,7 +4,7 @@ from pygame.event import Event
 from pygame.math import Vector2
 from pygame.time import Clock
 
-from models import character
+from models.motion import Motion
 from src.controller.character_controller import CharacterController
 from src.domain.models.game_context import GameContext
 from src.domain.service.resource_service import ResourceService
@@ -56,6 +56,8 @@ class GameController:
     game_view = GameView()
     context: GameContext
     character_controllers: dict[int, CharacterController]
+    cached_motion: Motion
+    motion: Motion
 
     def init(self):
         pygame.init()
@@ -81,7 +83,7 @@ class GameController:
             key: CharacterController(character, self.context.character_defs[character.sprite_sheet])
             for key, character in self.context.characters.items()
         }
-        self.game_view.character_views = [c.character_view for c in self.character_controllers.values()]
+        self.game_view.character_controllers = self.character_controllers
 
     def teardown(self):
         pygame.quit()

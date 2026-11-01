@@ -4,6 +4,5 @@ from enum import Enum
 class CharacterState(Enum):
     IDLE = 0
     MOVING = 0
-    ATTACKING = 1
-    DYING = 2
-    DEAD = 3
+    USING_SKILL = 1
+    DEAD = 2
