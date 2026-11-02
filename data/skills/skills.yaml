@@ -8,8 +8,8 @@
   cast_time: 1
   cooldown: 0
   script:
-    set_motion: bow_attack_1
-    delay: 1000
+#    set_motion: bow_attack_1
+    delay: 500
     spawn_projectile:
       projectile: 1000
       projectile_max_distance: 30

@@ -1,8 +1,8 @@
-from pygame import Rect
+from pygame import Rect, Surface
 
 from src.domain.models.character import Character
 from src.domain.models.game_context import GameContext
-from src.domain.service.sprite_service import SpriteDef, SpriteSet
+from src.domain.service.sprite_service import SpriteSet
 from src.view.health_bar_view import HealthBarView
 from src.view.view import View
 
@@ -12,17 +12,18 @@ class CharacterView(View):
     animation_var: float = 0
     position: tuple[float, float]
     tile_position: Rect
+    sprite_set: SpriteSet
+    sprite: Surface
 
-    def __init__(self, character: Character, sprite_def: SpriteDef):
+    def __init__(self, character: Character):
         super().__init__()
         self.character = character
         self.health_bar = HealthBarView(character)
-        self.sprite_def = sprite_def
 
     def draw(self, ctx: GameContext) -> None:
         self.health_bar.draw(ctx)
 
-        ctx.surface.blit(self.sprite_def.sprite,
+        ctx.surface.blit(self.sprite,
                           self.position,
                           self.tile_position)
 

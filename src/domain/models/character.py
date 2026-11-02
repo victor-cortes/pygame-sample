@@ -1,15 +1,16 @@
 from dataclasses import dataclass, field
+from types import SimpleNamespace
 
 from pygame import Rect
 from pygame.math import Vector2
 
+from models.character_projectile import CharacterProjectile
+from models.character_skill import CharacterSkill
 from models.character_state import CharacterState
 from models.skill import Skill
 from service.event_dispatcher import EventDispatcher
 from src.domain.models.direction import Direction
 from src.domain.models.weapon import Weapon
-
-DEFAULT_MOVE_PIXELS = 64
 
 
 @dataclass
@@ -40,15 +41,18 @@ class Character:
 
     direction: Direction = Direction.DOWN
     state: CharacterState = CharacterState.IDLE
+    activated_skill: CharacterSkill | None = None
+    character_projectiles: list[CharacterProjectile] = field(default_factory=lambda: [])
 
     position: Vector2 = field(default_factory=Vector2)
     move_vec: Vector2 = field(default_factory=Vector2)
 
     collision_box: Rect = field(default_factory=lambda x=16, y=12, w=30, h=40: Rect(x, y, w, h))
-    attack_timer: float = 0
 
-    on: dict[str, EventDispatcher] = field(default_factory= lambda: {
-        'die': EventDispatcher()
+    on: dict[str, EventDispatcher] = field(default_factory=lambda: {
+        'die': EventDispatcher(),
+        'skill_started': EventDispatcher(),
+        'skill_ended': EventDispatcher()
     })
 
     def __post_init__(self):
@@ -97,7 +101,7 @@ class Character:
         return 0
 
     def move(self, vector: Vector2):
-        if self.state == CharacterState.DEAD or self.state == CharacterState.USING_SKILL:
+        if self.is_using_skill() or self.is_dead():
             return False
 
         self.state = CharacterState.MOVING
@@ -117,25 +121,33 @@ class Character:
         return True
 
     def stop(self):
-        if self.state == CharacterState.MOVING:
+        if self.state == CharacterState.MOVING and not self.is_dead():
             self.state = CharacterState.IDLE
             self.move_vec = Vector2(0, 0)
             return True
         return False
 
-    def tick(self, dt: float):
-        # mover para um physics_service
-        match self.state:
-            case CharacterState.MOVING:
-                if not self.is_dead():
-                    self.position += self.move_vec * self.move_speed * dt * DEFAULT_MOVE_PIXELS
-
     def is_using_skill(self):
-        return self.weapon and any(skill.is_active for skill in self.weapon.skills)
+        return (self.weapon
+                and self.activated_skill is not None
+                and not self.is_dead())
 
     def is_dead(self):
         return self.hp <= 0 or self.state == CharacterState.DEAD
 
     def use_skill(self, skill: Skill):
-        if self.weapon and skill in self.weapon.skills and not self.is_using_skill() and not self.is_dead():
-            skill.start_skill(self)
+        if not self.is_using_skill() and self.weapon and skill in self.weapon.skills:
+            self.state = CharacterState.USING_SKILL
+            self.activated_skill = CharacterSkill(self, skill)
+            self.on['skill_started'].trigger_event(self.activated_skill)
+
+    def spawn_projectile(self, param: SimpleNamespace):
+        print(param)
+        self.character_projectiles.append(param)
+
+    def finish_skill(self):
+        activated = self.activated_skill
+        self.activated_skill.finished = False
+        self.activated_skill = None
+        self.state = CharacterState.IDLE
+        self.on['skill_ended'].trigger_event(activated)

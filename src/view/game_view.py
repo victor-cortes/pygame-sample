@@ -14,17 +14,9 @@ class GameView(View):
         super().__init__()
         self.hud = HUDView()
 
-        self.a_max = 5
+        self.a_max = 3
 
-        randoms = [random.random() for i in range(self.a_max)]
-        results = []
-        cursor = 0
-        for i in randoms:
-            cursor = (1 - cursor) * i + cursor
-            results.append(cursor)
-
-        self.a = results
-        print(results)
+        self.a = sorted([random.random() for i in range(15)])
 
     clock = 0
     index = 0
@@ -36,13 +28,14 @@ class GameView(View):
         for c in sorted(self.character_controllers.values(), key=lambda controller: controller.character.position.y):
             c.render(ctx)
 
-        if self.index < len(self.a) and self.clock > self.a[self.index]:
-            self.index += 1
-            ctx.player.take_damage(50)
-
-        if self.clock > self.a_max:
-            self.clock = 0
-            self.index = 0
+        # if self.index < len(self.a) and self.clock > self.a[self.index] * self.a_max:
+        #     self.index += 1
+        #     for c in ctx.characters.values():
+        #         c.take_damage(50)
+        #
+        # if self.clock > self.a_max:
+        #     self.clock = 0
+        #     self.index = 0
 
         # for c in sorted(self.character_views, key=lambda p: p.character.position.y):
         #     c.draw(ctx)

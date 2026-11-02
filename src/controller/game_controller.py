@@ -6,6 +6,7 @@ from pygame.time import Clock
 
 from models.motion import Motion
 from src.controller.character_controller import CharacterController
+from src.controller.physics_service import PhysicsService
 from src.domain.models.game_context import GameContext
 from src.domain.service.resource_service import ResourceService
 from src.view.game_view import GameView
@@ -58,6 +59,7 @@ class GameController:
     character_controllers: dict[int, CharacterController]
     cached_motion: Motion
     motion: Motion
+    physics = PhysicsService()
 
     def init(self):
         pygame.init()
@@ -121,6 +123,7 @@ class GameController:
         self.context.running = True
 
         while self.context.running:
+            self.physics.tick(self.context)
             self.handle_events()
             self.render()
 

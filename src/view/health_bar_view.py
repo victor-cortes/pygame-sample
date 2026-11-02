@@ -49,16 +49,6 @@ class HealthBarView(View):
 
         pygame.draw.rect(ctx.surface, (250, 250, 250), bar_rect, 1)
 
-        # print(bar_rect)
-        # level_surface: pygame.Surface = ctx.fonts['font_level'].render(f"{self.character.level}", True, (255, 255, 255))
-        # pygame.draw.circle(self.surface, (0, 0, 255) if not self.character.is_dead() else (100, 100, 100),
-        #                    self.character.position + (6, -4), 8)
-        # centered = Rect(self.character.position + (-1, -11), (14, 14))
-        # self.surface.blit(level_surface, (centered.x + centered.w / 2 - level_surface.get_width() / 2, centered.y + centered.h / 2 - level_surface.get_height() / 2))
-        # pygame.draw.rect(self.surface, (255, 0, 0) if not self.character.is_dead() else (100, 100, 100),
-        #                  ((self.character.position) + (12, -6), (50, 6)), 3)
-        # pygame.draw.rect(self.surface, (0, 0, 255), ((self.character.position) + (12, -6),
-        #                                              (50 * self.character.hp / self.character.max_hp, 6)), 3)
 
     def spawn_damage(self, dmg):
         print(dmg)
