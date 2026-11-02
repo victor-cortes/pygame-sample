@@ -22,3 +22,7 @@ class SkillController:
             self.__getattribute__(function)(param, delta_time)
         except AttributeError:
             pass
+
+    def set_motion(self, param, delta_time):
+        self.character_controller.set_motion(param)
+        self.skill.script_line += 1

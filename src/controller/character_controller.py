@@ -19,15 +19,15 @@ class CharacterController:
     motion: str = Motion.IDLE.value
     skill_motion: str = None
     animation_var: float = 0
-    skill_controller: SkillController = None
+    skill_controller: SkillController | None = None
 
     def __init__(self, character: Character, sprite_def: SpriteDef) -> None:
         self.character = character
         self.sprite_def = sprite_def
         self.character_view = CharacterView(character)
         self.character.on['die'].add_listener(lambda x: self.on_die())
-        self.character.on['skill_started'].add_listener(lambda x: self.on_skill_stated(x))
-        self.character.on['skill_ended'].add_listener(lambda x: self.on_skill_stated(x))
+        self.character.on['skill_started'].add_listener(lambda x: self.on_skill_started(x))
+        self.character.on['skill_ended'].add_listener(lambda x: self.on_skill_ended(x))
 
     def render(self, ctx: GameContext):
         sprite_set = self.sprite_def.sprite_sheet.sets[self.motion]
@@ -107,5 +107,9 @@ class CharacterController:
     def on_die(self):
         self.set_motion(Motion.DYING.value)
 
-    def on_skill_stated(self, skill: CharacterSkill):
+    def on_skill_started(self, skill: CharacterSkill):
         self.skill_controller = SkillController(skill, self)
+
+    def on_skill_ended(self, x):
+        self.skill_controller = None
+        self.set_motion(Motion.IDLE.value)
