@@ -68,14 +68,13 @@ class ResourceService:
         return weapons
 
     @classmethod
-    def load_skills(cls, folder: Path, projectiles: dict[int, Projectile]):
+    def load_skills(cls, folder: Path):
         skills = {}
         for file in folder.rglob("skills*.yaml"):
             with open(file) as stream:
                 file = yaml.safe_load(stream)
                 for key, value in file.items():
                     skill = Skill(**value)
-                    skill.projectile = projectiles[int(key)]
                     skills[key] = skill
 
 
@@ -98,8 +97,8 @@ class ResourceService:
         fonts = ResourceService.load_fonts(Path("assets/fonts"))
         character_defs = ResourceService.load_character_defs(Path("data/character_defs"), sprites)
         projectiles = ResourceService.load_projectiles(Path("data/skills"))
-        skills = ResourceService.load_skills(Path("data/skills"), projectiles)
+        skills = ResourceService.load_skills(Path("data/skills"))
         weapons = ResourceService.load_weapons(Path("data/equipments"), skills)
         characters = ResourceService.load_character(Path("data/characters"), weapons)
 
-        return fonts, character_defs, characters, sprites, skills
+        return fonts, character_defs, characters, sprites, skills, projectiles

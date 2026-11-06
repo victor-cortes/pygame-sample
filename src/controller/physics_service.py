@@ -13,6 +13,6 @@ class PhysicsService:
                         character.position += character.move_vec * character.move_speed * ctx.delta_time * DEFAULT_MOVE_PIXELS
 
             if character.activated_skill:
-                character.activated_skill.tick(ctx.delta_time)
+                character.activated_skill.tick(ctx)
                 if character.activated_skill.finished:
                     character.finish_skill()

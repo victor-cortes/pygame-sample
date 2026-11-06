@@ -78,7 +78,8 @@ class GameController:
          self.context.character_defs,
          self.context.characters,
          self.context.sprites,
-         self.context.skills) = ResourceService.load_resources()
+         self.context.skills,
+         self.context.projectiles) = ResourceService.load_resources()
 
     def load_characters(self):
         self.character_controllers = {

@@ -1,6 +1,7 @@
 import pygame
 from pygame.font import Font
 
+from models.projectile import Projectile
 from src.domain.models.character import Character
 from src.domain.models.skill import Skill
 
@@ -10,6 +11,7 @@ class GameContext:
     character_defs: dict = {}
     characters: dict[int, Character] = {}
     skills: dict[int, Skill] = {}
+    projectiles: dict[int, Projectile] = {}
     sprites: dict[str, pygame.Surface] = {}
     fonts: dict[str, Font] = {}
     running: bool = False
