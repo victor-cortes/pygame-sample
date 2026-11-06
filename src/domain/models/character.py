@@ -142,7 +142,6 @@ class Character:
             self.on['skill_started'].trigger_event(self.activated_skill)
 
     def spawn_projectile(self, param: SimpleNamespace):
-        print(param)
         self.character_projectiles.append(param)
 
     def finish_skill(self):
