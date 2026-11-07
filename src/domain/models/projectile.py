@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pygame
 
-from src.domain.models.character import Direction
+from models.direction import Direction
 
 
 @dataclass
@@ -17,6 +17,7 @@ class ProjectileDirectionDef:
     spawn_y: int
     collision_box: pygame.Rect
 
+
 @dataclass
 class Projectile:
     id: int
@@ -25,6 +26,6 @@ class Projectile:
     def __post_init__(self):
         if self.dirs:
             self.dirs = {
-                Direction(key): ProjectileDirectionDef(**value) if isinstance(value, dict) else value
+                key: ProjectileDirectionDef(**value) if isinstance(value, dict) else value
                 for key, value in self.dirs.items()
             }

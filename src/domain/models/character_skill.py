@@ -47,7 +47,6 @@ class CharacterSkill:
         from models.game_context import GameContext
         item = SimpleNamespace(**param)
         projectile = cast(GameContext, context).projectiles[item.projectile]
-        print(projectile)
 
         self.character.spawn_projectile(projectile)
         self.script_line += 1

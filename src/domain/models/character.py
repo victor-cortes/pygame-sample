@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from types import SimpleNamespace
 
 from pygame import Rect
 from pygame.math import Vector2
@@ -7,6 +6,7 @@ from pygame.math import Vector2
 from models.character_projectile import CharacterProjectile
 from models.character_skill import CharacterSkill
 from models.character_state import CharacterState
+from models.projectile import Projectile, ProjectileDirectionDef
 from models.skill import Skill
 from service.event_dispatcher import EventDispatcher
 from src.domain.models.direction import Direction
@@ -141,8 +141,11 @@ class Character:
             self.activated_skill = CharacterSkill(self, skill)
             self.on['skill_started'].trigger_event(self.activated_skill)
 
-    def spawn_projectile(self, param: SimpleNamespace):
-        self.character_projectiles.append(param)
+    def spawn_projectile(self, projectile: Projectile):
+        dirdef: ProjectileDirectionDef = projectile.dirs[self.direction.value]
+        vector = Vector2(self.position + (dirdef.spawn_x, dirdef.spawn_y))
+        print(vector)
+        self.character_projectiles.append(CharacterProjectile(projectile, vector, self.direction))
 
     def finish_skill(self):
         activated = self.activated_skill
