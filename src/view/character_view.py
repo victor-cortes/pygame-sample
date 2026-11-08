@@ -23,8 +23,16 @@ class CharacterView(View):
     def draw(self, ctx: GameContext) -> None:
         self.health_bar.draw(ctx)
 
-        ctx.surface.blit(self.sprite,
-                          self.position,
-                          self.tile_position)
+        ctx.surface.blit(
+            self.sprite,
+            self.position,
+            self.tile_position
+        )
 
-        # pygame.draw.rect(self.surface, (255, 0, 0), Rect(self.character.collision_box.x + self.character.position.x, self.character.collision_box.y + self.character.position.y, self.character.collision_box.w, self.character.collision_box.h), 2)
+        for projectile in self.character.character_projectiles:
+            ctx.surface.blit(
+                projectile.projectile.sprite,
+                projectile.position, (
+                    projectile.projectile.start_x * projectile.projectile.width,
+                    projectile.projectile.y, projectile.projectile.width, projectile.projectile.height)
+            )

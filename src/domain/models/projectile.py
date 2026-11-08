@@ -8,6 +8,7 @@ from models.direction import Direction
 @dataclass
 class ProjectileDirectionDef:
     sprite: str
+    y: int
     start_x: int
     end_x: int
     width: int

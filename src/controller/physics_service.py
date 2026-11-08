@@ -1,4 +1,7 @@
+from pygame import Vector2
+
 from models.character_state import CharacterState
+from models.direction import Direction
 from models.game_context import GameContext
 
 
@@ -16,3 +19,20 @@ class PhysicsService:
                 character.activated_skill.tick(ctx)
                 if character.activated_skill.finished:
                     character.finish_skill()
+
+            for projectile in character.character_projectiles:
+                if projectile.distance < projectile.param['projectile_max_distance']:
+                    (x, y) = projectile.position
+                    speed = projectile.param['projectile_speed']
+                    delta_s = ctx.delta_time * speed
+                    projectile.distance += delta_s
+                    match projectile.direction.value:
+                        case Direction.UP.value:
+                            y -= delta_s
+                        case Direction.DOWN.value:
+                            y += delta_s
+                        case Direction.LEFT.value:
+                            x -= delta_s
+                        case Direction.RIGHT.value:
+                            x += delta_s
+                    projectile.position = Vector2(x, y)

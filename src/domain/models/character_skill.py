@@ -5,8 +5,8 @@ from models.skill import Skill
 
 
 class SkillProjectileWhenCollides:
-    damage_multiplier: 1
-    fixed_damage: 0
+    damage_multiplier: float
+    fixed_damage: float
 
 
 class SkillProjectile:
@@ -32,8 +32,10 @@ class CharacterSkill:
 
     def execute_script(self, context):
         try:
-            function = list(self.skill.script.keys())[self.script_line]
-            self.exec_function(function, self.skill.script[function], context)
+            line = self.skill.script[self.script_line]
+            function = list(line.keys())[0]
+            params = list(line.values())[0]
+            self.exec_function(function, params, context)
         except IndexError:
             self.finish_skill()
 
@@ -48,7 +50,7 @@ class CharacterSkill:
         item = SimpleNamespace(**param)
         projectile = cast(GameContext, context).projectiles[item.projectile]
 
-        self.character.spawn_projectile(projectile)
+        self.character.spawn_projectile(projectile, self.skill, param)
         self.script_line += 1
 
     def delay(self, param, context):

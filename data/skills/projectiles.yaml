@@ -3,12 +3,13 @@
     dirs:
       up:
         sprite: "arrow.png"
+        y: 10
         start_x: 0
         end_x: 0
-        width: 1
-        height: 1
+        width: 5
+        height: 32
         speed: 1
-        spawn_x: 0
+        spawn_x: 32
         spawn_y: 0
         collision_box:
           x: 1
@@ -17,13 +18,14 @@
           h: 2
       left:
         sprite: "arrow.png"
+        y: 5
         start_x: 0
         end_x: 0
-        width: 1
-        height: 1
+        width: 32
+        height: 5
         speed: 1
         spawn_x: 0
-        spawn_y: 0
+        spawn_y: 32
         collision_box:
           x: 1
           y: 1
@@ -31,13 +33,14 @@
           h: 2
       down:
         sprite: "arrow.png"
-        start_x: 0
+        y: 10
+        start_x: 1
         end_x: 0
-        width: 1
-        height: 1
+        width: 5
+        height: 32
         speed: 1
-        spawn_x: 0
-        spawn_y: 0
+        spawn_x: 32
+        spawn_y: 32
         collision_box:
           x: 1
           y: 1
@@ -45,13 +48,14 @@
           h: 2
       right:
         sprite: "arrow.png"
+        y: 0
         start_x: 0
         end_x: 0
-        width: 1
-        height: 1
+        width: 32
+        height: 5
         speed: 1
-        spawn_x: 0
-        spawn_y: 0
+        spawn_x: 32
+        spawn_y: 32
         collision_box:
           x: 1
           y: 1

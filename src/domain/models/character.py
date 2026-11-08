@@ -141,11 +141,10 @@ class Character:
             self.activated_skill = CharacterSkill(self, skill)
             self.on['skill_started'].trigger_event(self.activated_skill)
 
-    def spawn_projectile(self, projectile: Projectile):
+    def spawn_projectile(self, projectile: Projectile, skill, param):
         dirdef: ProjectileDirectionDef = projectile.dirs[self.direction.value]
         vector = Vector2(self.position + (dirdef.spawn_x, dirdef.spawn_y))
-        print(vector)
-        self.character_projectiles.append(CharacterProjectile(projectile, vector, self.direction))
+        self.character_projectiles.append(CharacterProjectile(dirdef, vector, self.direction, skill, param))
 
     def finish_skill(self):
         activated = self.activated_skill

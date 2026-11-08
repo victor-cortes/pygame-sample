@@ -11,4 +11,4 @@ class Skill:
     fixed_damage: float
     cast_time: float
     cooldown: float
-    script: dict
+    script: list

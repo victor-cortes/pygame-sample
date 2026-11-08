@@ -12,8 +12,10 @@ class SkillController:
 
     def execute_script(self, delta_time):
         try:
-            function = list(self.skill.skill.script.keys())[self.skill.script_line]
-            self.exec_function(function, self.skill.skill.script[function], delta_time)
+            line = self.skill.skill.script[self.skill.script_line]
+            function = list(line.keys())[0]
+            params = list(line.values())[0]
+            self.exec_function(function, params, delta_time)
         except IndexError:
             self.skill.finish_skill()
 
