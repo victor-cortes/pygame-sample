@@ -12,7 +12,7 @@ from src.domain.service.resource_service import ResourceService
 from src.view.game_view import GameView
 
 clock = Clock()
-FPS = 60
+FPS = 144
 INTERNAL_WIDTH = 600
 INTERNAL_HEIGHT = 480
 SCALE_FACTOR = 2

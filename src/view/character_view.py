@@ -1,3 +1,4 @@
+import pygame
 from pygame import Rect, Surface
 
 from src.domain.models.character import Character
@@ -28,6 +29,19 @@ class CharacterView(View):
             self.position,
             self.tile_position
         )
+        char_collision = Rect(
+            self.character.collision_box.x + self.character.position.x,
+            self.character.collision_box.y + self.character.position.y,
+            self.character.collision_box.w,
+            self.character.collision_box.h
+        )
+
+        pygame.draw.rect(
+            ctx.surface,
+            (255, 0, 0),
+            char_collision
+            , 1
+        )
 
         for projectile in self.character.character_projectiles:
             ctx.surface.blit(
@@ -35,4 +49,17 @@ class CharacterView(View):
                 projectile.position, (
                     projectile.projectile.start_x * projectile.projectile.width,
                     projectile.projectile.y, projectile.projectile.width, projectile.projectile.height)
+            )
+
+            rect = Rect(
+                projectile.projectile.collision_box['x'] + projectile.position.x,
+                projectile.projectile.collision_box['y'] + projectile.position.y,
+                projectile.projectile.collision_box['w'],
+                projectile.projectile.collision_box['h']
+            )
+            pygame.draw.rect(
+                ctx.surface,
+                (255, 0, 0),
+                rect
+                , 1
             )
